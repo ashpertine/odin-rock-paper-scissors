@@ -43,96 +43,154 @@ function playGame() {
     let humanChoice = "";
 
     //reset displays
-    const body = document.querySelector('body');
-    const mainContent = document.querySelector('.main-content');
+    const humanChoicePreview = document.querySelector('#human-choice-preview');
+    const computerChoicePreview = document.querySelector('#computer-choice-preview')
     const scoreDisplay = document.querySelector('.score-display');
     scoreDisplay.textContent = `You: ${humanScore} - Computer: ${computerScore}`;
-    const humanChoiceDisplay = document.querySelector('.choice-display');
-    humanChoiceDisplay.textContent = '';
     const feedbackDisplay = document.querySelector('#feedback-display')
-    feedbackDisplay.textContent = '';
+    feedbackDisplay.textContent = 'Welcome!';
     const winnerDisplay = document.querySelector('#winner-display');
     winnerDisplay.textContent = '';
+    const playAndPlayAgn = document.querySelector('.play-and-play-again')
 
 
     //create choice Buttons
     const humanChoices = document.querySelector('.human-choices');
     const bulbasaurButton = document.createElement('button');
-    bulbasaurButton.innerText = 'Bulbasaur';
+    bulbasaurButton.value = 'Bulbasaur';
     bulbasaurButton.classList.add('choice');
-    humanChoices.insertBefore(bulbasaurButton, humanChoiceDisplay); 
+    humanChoices.append(bulbasaurButton); 
     const squirtleButton = document.createElement('button');
-    squirtleButton.innerText = 'Squirtle';
+    squirtleButton.value = 'Squirtle';
     squirtleButton.classList.add('choice');
-    humanChoices.insertBefore(squirtleButton, humanChoiceDisplay);
+    humanChoices.append(squirtleButton);
     const charmanderButton = document.createElement('button');
-    charmanderButton.innerText = 'Charmander';
+    charmanderButton.value = 'Charmander';
     charmanderButton.classList.add('choice');
-    humanChoices.insertBefore(charmanderButton, humanChoiceDisplay);
+    humanChoices.append(charmanderButton);
+
+
+    //add images
+    const bulbasaurImg = document.createElement('img');
+    bulbasaurImg.src = './images/bulbasaur.png';
+    bulbasaurImg.width = 100;
+    bulbasaurImg.height = 100;
+    bulbasaurButton.append(bulbasaurImg);
+
+    const squirtleImg = document.createElement('img');
+    squirtleImg.src = './images/squirtle.png';
+    squirtleImg.width = 100;
+    squirtleImg.height = 100;
+    squirtleButton.append(squirtleImg);
+
+    const charmanderImg = document.createElement('img');
+    charmanderImg.src = './images/charmander.png';
+    charmanderImg.width = 100;
+    charmanderImg.height = 100;
+    charmanderButton.append(charmanderImg);
 
     humanButtons = document.querySelectorAll('.choice');
     humanButtons.forEach((button) => {
         button.addEventListener('click', () => {
-            if(feedbackDisplay.textContent == 'Choose Bulbasaur, Squirtle or Charmander!') {
-                feedbackDisplay.textContent = '';
+            if(humanChoicePreview.firstChild) {
+                humanChoicePreview.removeChild(humanChoicePreview.firstChild);
             }
 
-            humanChoiceDisplay.innerText = "Your choice: " + button.innerText;
-            humanChoice = button.innerText.toLowerCase();
+            if(computerChoicePreview.firstChild) {
+                computerChoicePreview.removeChild(computerChoicePreview.firstChild);
+            }
+        
+            if(feedbackDisplay.textContent == 'Choose Bulbasaur, Squirtle or Charmander!') {
+                feedbackDisplay.textContent = '';
+                feedbackDisplay.style.color = 'white';
+            }
+            computerChoicePreview.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
+            humanChoicePreview.style.backgroundColor = 'rgba(255, 255, 255, 0.4)'; 
+            //create human pokemon preview
+            let humanPokemonImagePreview = document.createElement('img');
+            humanPokemonImagePreview.src = `./images/${button.value.toLowerCase()}.png`
+            humanPokemonImagePreview.classList.add('human-pokemon-image-preview');
+            humanPokemonImagePreview.width = '400';
+            humanPokemonImagePreview.height = '400';
+            humanChoicePreview.append(humanPokemonImagePreview);
+
+            //assign humanchoice
+            humanChoice = button.value.toLowerCase();
         });
     });
 
     //set new playButton everytime the function is ran (eliminates old event listener)
     const playButton = document.createElement('button');
-    playButton.classList.add('.playButton');
+    playButton.classList.add('play-button');
     playButton.textContent = "Play Round!";
-    mainContent.append(playButton);
+    playAndPlayAgn.append(playButton);
     playButton.disabled = false;
 
     playButton.addEventListener('click', () => {
-        humanChoiceDisplay.innerText = '';
-        if(humanChoice == '') {
-            feedbackDisplay.textContent = 'Choose Bulbasaur, Squirtle or Charmander!';
-        } else {
-            let feedbackInfo = playRound(humanChoice, getComputerChoice());
-            let isWin = feedbackInfo[1]
-            if(isWin != undefined) {
-                feedbackDisplay.textContent = feedbackInfo[0];
-                switch(isWin) {
-                    case true:
-                        humanScore++;
-                        break;
-                    case false:
-                        computerScore++;
-                        break;
-                    default:
-                        break;
-                }
-                scoreDisplay.textContent = `You: ${humanScore} - Computer: ${computerScore}`;
-                humanChoice = '';
-            }else {
-                feedbackDisplay.textContent = feedbackInfo[0];
-                humanChoice = '';
-            } 
+        computerChoicePreview.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
+        humanChoicePreview.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
+        if(computerChoicePreview.firstChild) {
+            computerChoicePreview.removeChild(computerChoicePreview.firstChild);
         }
+        let computerChoice = getComputerChoice();
+        let feedbackInfo = playRound(humanChoice, computerChoice);
+        let isWin = feedbackInfo[1]
+
+        //create computer pokemon preview
+        let computerPokemonImagePreview = document.createElement('img');
+        computerPokemonImagePreview.src = `./images/${computerChoice}.png`
+        computerPokemonImagePreview.classList.add('computer-pokemon-image-preview');
+        computerPokemonImagePreview.width = '400';
+        computerPokemonImagePreview.height = '400';
+        if(isWin != undefined) {
+            feedbackDisplay.textContent = feedbackInfo[0];
+            switch(isWin) {
+                case true:
+                    computerChoicePreview.style.backgroundColor = 'rgba(255, 0, 0, 0.4)';
+                    humanScore++;
+                    break;
+                case false:
+                    humanChoicePreview.style.backgroundColor = 'rgba(255, 0, 0, 0.4)';
+                    computerScore++;
+                    break;
+                default:
+                    break;
+            }
+
+
+            scoreDisplay.textContent = `You: ${humanScore} - Computer: ${computerScore}`;
+        }else {
+            feedbackDisplay.textContent = feedbackInfo[0];
+        } 
+        computerChoicePreview.append(computerPokemonImagePreview);
 
 
         if(computerScore == 5|| humanScore == 5) {
-            playButton.disabled = true;
-                humanScore > computerScore ? winnerDisplay.textContent = "Congrats! You won!" :
-                                             winnerDisplay.textContent = "Better luck next time!";
-                let playAgainBtn = document.createElement('button');
-                playAgainBtn.textContent = 'Play Again!';
-                playAgainBtn.addEventListener('click', () => {
-                    bulbasaurButton.remove();
-                    squirtleButton.remove();
-                    charmanderButton.remove();
-                    playButton.remove();
-                    playAgainBtn.remove();
-                    return playGame();
-                });
-                mainContent.append(playAgainBtn);
-            } 
+            playButton.remove()
+            if(humanScore > computerScore) {
+                winnerDisplay.textContent = "Congrats! You won!";
+                winnerDisplay.style.backgroundColor = 'aquamarine';
+            } else {
+                winnerDisplay.textContent = "Better luck next time!";
+                winnerDisplay.style.backgroundColor = 'red';
+            }
+            let playAgainBtn = document.createElement('button');
+            playAgainBtn.textContent = 'Play Again!';
+            playAgainBtn.classList.add('play-again-button');
+            playAgainBtn.addEventListener('click', () => {
+                bulbasaurButton.remove();
+                squirtleButton.remove();
+                charmanderButton.remove();
+                humanChoicePreview.removeChild(humanChoicePreview.firstChild);
+                computerChoicePreview.removeChild(computerChoicePreview.firstChild);
+                humanChoicePreview.style.backgroundColor = 'rgba(255, 255, 255, 0.4';
+                computerChoicePreview.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
+                winnerDisplay.style.removeProperty('background-color')
+                playAgainBtn.remove();
+                return playGame();
+            });
+            playAndPlayAgn.append(playAgainBtn);
+        } 
     });    
 }
 

@@ -9,15 +9,30 @@
     <body>
         <div class="scoreboard">
             <span class="score-display"></span>
-        </div>
-        <div class="main-content">
-            <div class="human-choices">
-                <span class="choice-display"></span>
-            </div>
             <span id="feedback-display"></span>
             <h3 id="winner-display"></h3>
         </div>
-        <script type='text/javascript' src="index.js"></script>
+        <div class="main-content">
+            <div class="preview-container">
+            
+                <div id="left-hand-side">
+                    <div id='human-choice-preview'></div>
+                        <div class="human-choices"></div>
+                </div>
+
+                <span id="versus">VS</span>
+
+                <div id="right-hand-side">
+                    <div id="computer-choice-preview"></div>
+                    <div class="play-and-play-again">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <p><b>RPS But It's Pokemon, Written Horribly By Ashton Chew 2025</b><p>
+        </footer> 
+        <script type='text/javascript' src="index.js"></script>      
     </body>
 </html>
 
